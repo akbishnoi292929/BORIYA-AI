@@ -81,9 +81,14 @@ void BoriyaAudioProcessor::releaseResources()
 
 bool BoriyaAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
 {
+    // Stereo / Mono output allowed, input strictly disabled for Synth
     const auto& out = layouts.getMainOutputChannelSet();
     if (out != juce::AudioChannelSet::stereo() && out != juce::AudioChannelSet::mono())
         return false;
+
+    if (!layouts.getMainInputChannelSet().isDisabled())
+        return false;
+
     return true;
 }
 
