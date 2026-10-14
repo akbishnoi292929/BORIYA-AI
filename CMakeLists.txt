@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
-project(BORIYA VERSION 1.0.0 LANGUAGES C CXX)
+project(BORIYA_AI VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Enforce Static C++ Runtime (/MT) for zero DLL issues on Windows 7
+# Enforce Static C++ Runtime (/MT) for Windows 7 64-bit
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if(NOT TARGET juce::juce_audio_utils)
@@ -22,7 +22,7 @@ if(NOT TARGET juce::juce_audio_utils)
     endif()
 endif()
 
-juce_add_plugin(BORIYA
+juce_add_plugin(BORIYA_AI
     COMPANY_NAME "OG RJ HOOD"
     IS_SYNTH TRUE
     NEEDS_MIDI_INPUT TRUE
@@ -31,12 +31,12 @@ juce_add_plugin(BORIYA
     EDITOR_WANTS_KEYBOARD_FOCUS TRUE
     COPY_PLUGIN_AFTER_BUILD FALSE
     PLUGIN_MANUFACTURER_CODE Orjh
-    PLUGIN_CODE Bori
+    PLUGIN_CODE BoAI
     FORMATS VST3
-    PRODUCT_NAME "BORIYA"
+    PRODUCT_NAME "BORIYA AI"
 )
 
-set_target_properties(BORIYA PROPERTIES 
+set_target_properties(BORIYA_AI PROPERTIES 
     JUCE_VST3_CAN_REPLACE_VST2 OFF
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
@@ -46,9 +46,9 @@ file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.h"
 )
 
-target_sources(BORIYA PRIVATE ${SourceFiles})
+target_sources(BORIYA_AI PRIVATE ${SourceFiles})
 
-target_compile_definitions(BORIYA PUBLIC
+target_compile_definitions(BORIYA_AI PUBLIC
     WINVER=0x0601
     _WIN32_WINNT=0x0601
     NTDDI_VERSION=0x06010000
@@ -58,10 +58,10 @@ target_compile_definitions(BORIYA PUBLIC
 )
 
 if(MSVC)
-    target_compile_options(BORIYA PRIVATE /MT /bigobj)
+    target_compile_options(BORIYA_AI PRIVATE /MT /bigobj)
 endif()
 
-target_link_libraries(BORIYA PRIVATE
+target_link_libraries(BORIYA_AI PRIVATE
     juce::juce_audio_utils
     juce::juce_audio_processors
     juce::juce_dsp
@@ -69,4 +69,4 @@ target_link_libraries(BORIYA PRIVATE
     juce::juce_gui_extra
 )
 
-juce_generate_juce_header(BORIYA)
+juce_generate_juce_header(BORIYA_AI)
