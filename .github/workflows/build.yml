@@ -1,0 +1,53 @@
+name: Build BORIYA VST3 Win7
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-win:
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    - name: Cache JUCE Framework
+      uses: actions/cache@v4
+      with:
+        path: JUCE
+        key: juce-7012-win7-${{ runner.os }}
+
+    - name: Configure CMake for Windows 7
+      run: >
+        cmake -B build
+        -DCMAKE_BUILD_TYPE=Release
+        -DJUCE_BUILD_EXTRAS=OFF
+        -DJUCE_BUILD_EXAMPLES=OFF
+        -G "Ninja"
+
+    - name: Build BORIYA VST3
+      run: cmake --build build --config Release --target BORIYA_VST3 --parallel
+
+    - name: Package VST3
+      shell: bash
+      run: |
+        mkdir -p dist
+        VST_DIR=$(find build -name "BORIYA.vst3" -type d | head -n 1)
+        cd "$(dirname "$VST_DIR")"
+        7z a -mx=1 -tzip "$GITHUB_WORKSPACE/dist/BORIYA-VST3-Win7-x64.zip" "BORIYA.vst3"
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: BORIYA-VST3-Win7-x64
+        path: dist/BORIYA-VST3-Win7-x64.zip
+        retention-days: 7
