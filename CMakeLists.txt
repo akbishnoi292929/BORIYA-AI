@@ -4,6 +4,7 @@ project(BORIYA_AI VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Enforce static runtime
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if(NOT TARGET juce::juce_audio_utils)
@@ -31,14 +32,11 @@ juce_add_plugin(BORIYA_AI
     COPY_PLUGIN_AFTER_BUILD FALSE
     PLUGIN_MANUFACTURER_CODE Orjh
     PLUGIN_CODE BoAI
-    FORMATS VST3
+    FORMATS VST3 VST
     PRODUCT_NAME "BORIYA AI"
-    VST3_CATEGORIES "Instrument" "Synth"
 )
 
-# FL Studio 20 / Windows 7 ke liye moduleinfo.json manifest band karo
 set_target_properties(BORIYA_AI PROPERTIES 
-    JUCE_VST3_CAN_REPLACE_VST2 OFF
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
     JUCE_VST3_GENERATE_MODULE_INFO OFF
 )
@@ -56,7 +54,6 @@ target_compile_definitions(BORIYA_AI PUBLIC
     NTDDI_VERSION=0x06010000
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
-    JUCE_VST3_CAN_REPLACE_VST2=0
     JUCE_USE_DIRECTWRITE=0
     JUCE_DIRECT2D=0
     JUCE_WINGDI=1
