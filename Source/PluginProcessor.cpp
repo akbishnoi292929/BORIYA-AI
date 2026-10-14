@@ -25,7 +25,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout BoriyaAudioProcessor::create
 }
 
 BoriyaAudioProcessor::BoriyaAudioProcessor()
-    : AudioProcessor(BusesProperties().withOutput("Output", juce::AudioChannelSet::stereo(), true)),
+    : AudioProcessor(BusesProperties()
+                        .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
       apvts(*this, nullptr, "BoriyaParams", createParameterLayout())
 {
     formatManager.registerBasicFormats();
@@ -81,9 +82,13 @@ void BoriyaAudioProcessor::releaseResources()
 
 bool BoriyaAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
 {
-    const auto& out = layouts.getMainOutputChannelSet();
-    if (out != juce::AudioChannelSet::stereo() && out != juce::AudioChannelSet::mono())
+    // Stereo Output allow karo, bina input channel ke
+    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
+
+    if (!layouts.getMainInputChannelSet().isDisabled())
+        return false;
+
     return true;
 }
 
