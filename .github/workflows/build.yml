@@ -39,11 +39,12 @@ jobs:
     - name: Build Target
       run: cmake --build build --config Release --target BORIYA_AI_VST3 --parallel
 
-    - name: Package VST3
+    - name: Strip Manifest & Package Binary
       shell: bash
       run: |
         mkdir -p dist
         VST_DIR=$(find build -name "BORIYA AI.vst3" -type d | head -n 1)
+        # Modern manifest directory strip karo
         rm -rf "$VST_DIR/Contents/Resources"
         cd "$(dirname "$VST_DIR")"
         7z a -mx=1 -tzip "$GITHUB_WORKSPACE/dist/BORIYA-AI-Win7-x64.zip" "BORIYA AI.vst3"
