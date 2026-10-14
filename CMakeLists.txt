@@ -4,7 +4,8 @@ project(BORIYA_AI VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Enforce static C++ runtime (/MT) for Win7
+# Windows 7 SP1 target hardcode
+set(CMAKE_SYSTEM_VERSION 6.1)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if(NOT TARGET juce::juce_audio_utils)
@@ -36,7 +37,6 @@ juce_add_plugin(BORIYA_AI
     PRODUCT_NAME "BORIYA AI"
 )
 
-# Purane EX VST ki tarah manifest helper completely kill
 set_target_properties(BORIYA_AI PROPERTIES 
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
     JUCE_VST3_CAN_REPLACE_VST2 OFF
@@ -61,11 +61,12 @@ target_compile_definitions(BORIYA_AI PUBLIC
     JUCE_DIRECT2D=0
     JUCE_WINGDI=1
     JUCE_DISABLE_VST3_MANIFEST_HELPER=1
+    _CRT_SECURE_NO_WARNINGS
 )
 
 if(MSVC)
-    target_compile_options(BORIYA_AI PRIVATE /MT /bigobj /EHsc /arch:SSE2)
-    target_link_options(BORIYA_AI PRIVATE /SUBSYSTEM:WINDOWS,6.01)
+    target_compile_options(BORIYA_AI PRIVATE /MT /bigobj /EHsc /arch:SSE2 /Oi /Oy-)
+    target_link_options(BORIYA_AI PRIVATE /SUBSYSTEM:WINDOWS,6.01 /OPT:REF /OPT:ICF)
 endif()
 
 target_link_libraries(BORIYA_AI PRIVATE
