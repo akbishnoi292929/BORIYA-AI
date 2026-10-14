@@ -4,7 +4,7 @@ project(BORIYA_AI VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Enforce static C++ runtime
+# Enforce static C++ runtime (/MT) for Win7
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if(NOT TARGET juce::juce_audio_utils)
@@ -34,11 +34,12 @@ juce_add_plugin(BORIYA_AI
     PLUGIN_CODE BoAI
     FORMATS VST3
     PRODUCT_NAME "BORIYA AI"
-    VST3_CATEGORIES "Instrument" "Synth"
 )
 
+# Purane EX VST ki tarah manifest helper completely kill
 set_target_properties(BORIYA_AI PROPERTIES 
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    JUCE_VST3_CAN_REPLACE_VST2 OFF
     JUCE_VST3_GENERATE_MODULE_INFO OFF
 )
 
@@ -49,7 +50,6 @@ file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS
 
 target_sources(BORIYA_AI PRIVATE ${SourceFiles})
 
-# Pure Windows 7 safe target definitions
 target_compile_definitions(BORIYA_AI PUBLIC
     WINVER=0x0601
     _WIN32_WINNT=0x0601
@@ -64,7 +64,6 @@ target_compile_definitions(BORIYA_AI PUBLIC
 )
 
 if(MSVC)
-    # SSE2 instruction set lock taaki puraane CPU ya Win7 par AVX crash na ho
     target_compile_options(BORIYA_AI PRIVATE /MT /bigobj /EHsc /arch:SSE2)
     target_link_options(BORIYA_AI PRIVATE /SUBSYSTEM:WINDOWS,6.01)
 endif()
