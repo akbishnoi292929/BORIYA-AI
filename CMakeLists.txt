@@ -4,7 +4,6 @@ project(BORIYA_AI VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Force Static Runtime (/MT) for zero external runtime DLL dependencies
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if(NOT TARGET juce::juce_audio_utils)
@@ -37,9 +36,11 @@ juce_add_plugin(BORIYA_AI
     VST3_CATEGORIES "Instrument" "Synth"
 )
 
+# FL Studio 20 / Windows 7 ke liye moduleinfo.json manifest band karo
 set_target_properties(BORIYA_AI PROPERTIES 
     JUCE_VST3_CAN_REPLACE_VST2 OFF
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    JUCE_VST3_GENERATE_MODULE_INFO OFF
 )
 
 file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS
@@ -49,7 +50,6 @@ file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS
 
 target_sources(BORIYA_AI PRIVATE ${SourceFiles})
 
-# STRICT WINDOWS 7 SAFE COMPILATION FLAGS
 target_compile_definitions(BORIYA_AI PUBLIC
     WINVER=0x0601
     _WIN32_WINNT=0x0601
@@ -60,11 +60,11 @@ target_compile_definitions(BORIYA_AI PUBLIC
     JUCE_USE_DIRECTWRITE=0
     JUCE_DIRECT2D=0
     JUCE_WINGDI=1
-    JUCE_STRICT_REFCOUNTEDPOINTER=1
+    JUCE_DISABLE_VST3_MANIFEST_HELPER=1
 )
 
 if(MSVC)
-    target_compile_options(BORIYA_AI PRIVATE /MT /bigobj /EHsc /Gy /Zc:inline)
+    target_compile_options(BORIYA_AI PRIVATE /MT /bigobj /EHsc /Gy)
     target_link_options(BORIYA_AI PRIVATE /SUBSYSTEM:WINDOWS,6.01)
 endif()
 
