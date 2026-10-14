@@ -4,8 +4,7 @@ project(BORIYA_AI VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Windows 7 SP1 target hardcode
-set(CMAKE_SYSTEM_VERSION 6.1)
+# Strict Static Runtime (/MT)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if(NOT TARGET juce::juce_audio_utils)
@@ -50,6 +49,7 @@ file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS
 
 target_sources(BORIYA_AI PRIVATE ${SourceFiles})
 
+# Windows 7 kernel flags - Saare modern Win10/11 DirectX aur Font features disable
 target_compile_definitions(BORIYA_AI PUBLIC
     WINVER=0x0601
     _WIN32_WINNT=0x0601
@@ -65,8 +65,8 @@ target_compile_definitions(BORIYA_AI PUBLIC
 )
 
 if(MSVC)
-    target_compile_options(BORIYA_AI PRIVATE /MT /bigobj /EHsc /arch:SSE2 /Oi /Oy-)
-    target_link_options(BORIYA_AI PRIVATE /SUBSYSTEM:WINDOWS,6.01 /OPT:REF /OPT:ICF)
+    target_compile_options(BORIYA_AI PRIVATE /MT /bigobj /EHsc /arch:SSE2 /GS-)
+    target_link_options(BORIYA_AI PRIVATE /SUBSYSTEM:WINDOWS,6.01 /DYNAMICBASE:NO)
 endif()
 
 target_link_libraries(BORIYA_AI PRIVATE
