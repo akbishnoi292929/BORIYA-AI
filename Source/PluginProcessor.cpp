@@ -38,7 +38,7 @@ BoriyaAudioProcessor::BoriyaAudioProcessor()
 
 BoriyaAudioProcessor::~BoriyaAudioProcessor() {}
 
-const juce::String BoriyaAudioProcessor::getName() const { return "BORIYA"; }
+const juce::String BoriyaAudioProcessor::getName() const { return "BORIYA AI"; }
 bool BoriyaAudioProcessor::acceptsMidi() const { return true; }
 bool BoriyaAudioProcessor::producesMidi() const { return false; }
 bool BoriyaAudioProcessor::isMidiEffect() const { return false; }
@@ -79,7 +79,6 @@ void BoriyaAudioProcessor::releaseResources()
         voices[i].active = false;
 }
 
-// 100% FL Studio Compliant Stereo Layout
 bool BoriyaAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
 {
     const auto& out = layouts.getMainOutputChannelSet();
@@ -163,7 +162,6 @@ void BoriyaAudioProcessor::renderFinalTheme()
         return;
     }
 
-    // Lead layer selection for acoustic rendering
     int leadIdx = -1;
     for (int i = 0; i < 3; ++i)
     {
