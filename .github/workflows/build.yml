@@ -37,11 +37,13 @@ jobs:
     - name: Build BORIYA AI VST3
       run: cmake --build build --config Release --target BORIYA_AI_VST3 --parallel
 
-    - name: Package VST3
+    - name: Clean Manifest and Package
       shell: bash
       run: |
         mkdir -p dist
         VST_DIR=$(find build -name "BORIYA AI.vst3" -type d | head -n 1)
+        # Remove troublesome modern moduleinfo.json for Win7/FL20 compatibility
+        rm -f "$VST_DIR/Contents/Resources/moduleinfo.json"
         cd "$(dirname "$VST_DIR")"
         7z a -mx=1 -tzip "$GITHUB_WORKSPACE/dist/BORIYA-AI-VST3-Win7-x64.zip" "BORIYA AI.vst3"
 
