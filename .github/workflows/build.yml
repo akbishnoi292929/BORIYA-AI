@@ -27,7 +27,7 @@ jobs:
         path: JUCE
         key: juce-7012-win7-${{ runner.os }}
 
-    - name: Configure CMake for Windows 7 (NT 6.1)
+    - name: Configure CMake for Windows 7
       run: >
         cmake -B build
         -DCMAKE_BUILD_TYPE=Release
@@ -39,7 +39,7 @@ jobs:
     - name: Build Target
       run: cmake --build build --config Release --target BORIYA_AI_VST3 --parallel
 
-    - name: Clean Manifest & Package Bundle
+    - name: Package VST3
       shell: bash
       run: |
         mkdir -p dist
