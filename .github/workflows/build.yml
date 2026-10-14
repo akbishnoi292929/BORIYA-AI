@@ -15,11 +15,10 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Setup MSVC for Win7 Compatibility
+    - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        winsdk: '10.0.19041.0'
 
     - name: Cache JUCE Framework
       uses: actions/cache@v4
@@ -27,11 +26,10 @@ jobs:
         path: JUCE
         key: juce-7012-win7-${{ runner.os }}
 
-    - name: Configure CMake for Windows 7
+    - name: Configure CMake
       run: >
         cmake -B build
         -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_SYSTEM_VERSION=6.1
         -DJUCE_BUILD_EXTRAS=OFF
         -DJUCE_BUILD_EXAMPLES=OFF
         -G "Ninja"
@@ -39,12 +37,11 @@ jobs:
     - name: Build Target
       run: cmake --build build --config Release --target BORIYA_AI_VST3 --parallel
 
-    - name: Strip Manifest & Package Binary
+    - name: Package VST3
       shell: bash
       run: |
         mkdir -p dist
         VST_DIR=$(find build -name "BORIYA AI.vst3" -type d | head -n 1)
-        # Modern manifest directory strip karo
         rm -rf "$VST_DIR/Contents/Resources"
         cd "$(dirname "$VST_DIR")"
         7z a -mx=1 -tzip "$GITHUB_WORKSPACE/dist/BORIYA-AI-Win7-x64.zip" "BORIYA AI.vst3"
