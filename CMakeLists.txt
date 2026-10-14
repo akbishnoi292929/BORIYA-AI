@@ -4,7 +4,6 @@ project(BORIYA_AI VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Enforce Static C++ Runtime (/MT) for Windows 7 64-bit
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if(NOT TARGET juce::juce_audio_utils)
@@ -34,6 +33,7 @@ juce_add_plugin(BORIYA_AI
     PLUGIN_CODE BoAI
     FORMATS VST3
     PRODUCT_NAME "BORIYA AI"
+    VST3_CATEGORIES "Instrument" "Synth"
 )
 
 set_target_properties(BORIYA_AI PROPERTIES 
@@ -55,6 +55,7 @@ target_compile_definitions(BORIYA_AI PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
+    JUCE_FORCE_USE_LEGACY_PARAM_IDS=1
 )
 
 if(MSVC)
